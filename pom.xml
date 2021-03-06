@@ -9,7 +9,23 @@
     <version>1.0</version>
     <description>A sample app that publishes Tweets of interest to various channels</description>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>2.16.13</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>ssm</artifactId>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb -->
         <dependency>
             <groupId>com.amazonaws</groupId>
@@ -40,18 +56,6 @@
             <groupId>net.gpedro.integrations.slack</groupId>
             <artifactId>slack-webhook</artifactId>
             <version>1.4.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.twilio.sdk/twilio-java-sdk -->
-        <dependency>
-            <groupId>com.twilio.sdk</groupId>
-            <artifactId>twilio</artifactId>
-            <version>7.49.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-secretsmanager -->
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-secretsmanager</artifactId>
-            <version>1.11.761</version>
         </dependency>
     </dependencies>
 
