@@ -1,4 +1,4 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 public class LambdaHandlerTest {
@@ -6,6 +6,6 @@ public class LambdaHandlerTest {
   public void getTweets() {
       LambdaHandler lambdaHandler = new LambdaHandler();
 
-      assertEquals("abc", lambdaHandler.handleRequest());
+      assertNull(lambdaHandler.handleRequest());
   }
 }

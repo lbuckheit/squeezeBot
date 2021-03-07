@@ -1,4 +1,3 @@
-  
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +23,7 @@ public class LambdaHandler/* implements RequestHandler<ScheduledEvent, Void>*/ {
     // private static final String REGION = System.getenv("us-east-2");
 
     // private static final String SEARCH_STRING = System.getenv("SEARCH_STRING");
-    private static final String SEARCH_STRING = System.getenv("aws");
+    private static final String SEARCH_STRING = "awstest from:lukebuckheit";
 
     public Void handleRequest(/*ScheduledEvent event, Context context*/) {
         try {
@@ -69,8 +68,39 @@ public class LambdaHandler/* implements RequestHandler<ScheduledEvent, Void>*/ {
     }
 
     private String getTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return sdf.format(new Date(System.currentTimeMillis() - 540 * 1000));
+        Date now = new Date();
+
+        SimpleDateFormat twitterTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+        twitterTimeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+        SimpleDateFormat usEasternTime = new SimpleDateFormat("HH:mm");
+        usEasternTime.setTimeZone(TimeZone.getTimeZone("America/New_York"));
+
+        SimpleDateFormat dayOfWeek = new SimpleDateFormat("EEE");
+
+        String currentDayOfWeek = dayOfWeek.format(now);
+        Boolean isTradingDay = !currentDayOfWeek.equals("Sat") && !currentDayOfWeek.equals("Sun");
+
+        Boolean isPreMarket = false;
+        Boolean isAfterHours = false;
+        try {
+            Date currentEasternTime = usEasternTime.parse(usEasternTime.format(now));
+            isPreMarket = currentEasternTime.before(usEasternTime.parse("09:00"));
+            isAfterHours = currentEasternTime.after(usEasternTime.parse("16:30"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Boolean isMarketOpen = isTradingDay && !isPreMarket && !isAfterHours;
+
+        Integer checkInterval = 900; // AWS is calling this every 15min during market hours
+        if (!isMarketOpen) {
+            checkInterval = 64800; // If the market's closed check every 18 hours
+
+            if (currentDayOfWeek == "Mon" && isPreMarket) {
+                checkInterval = 216000; // If it's Monday premarket, we need to scan the entire weekend
+            }
+        }
+
+        return twitterTimeFormat.format(new Date(System.currentTimeMillis() - checkInterval * 1000));
     }
 }
