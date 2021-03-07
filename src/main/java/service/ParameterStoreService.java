@@ -1,5 +1,4 @@
-// https://github.com/awsdocs/aws-doc-sdk-examples/blob/82cb31b4cd4a0e5971d1e68cb775377ecfa0bb2f/javav2/example_code/ssm/src/main/java/com/example/ssm/GetParameter.java
-// Need to write some tests? for this service to see if I've written it correctly
+// TODO - Reminder that you'll need to set everything up to pull the secret values and AWS keys from AWS itself rather than your local config (https://serverfault.com/questions/1008123/how-to-decrypt-secure-string-values-in-parameter-store-using-net-cores-amazons)
 package service;
 
 import software.amazon.awssdk.regions.Region;
@@ -9,5 +8,25 @@ import software.amazon.awssdk.services.ssm.model.GetParameterResponse;
 import software.amazon.awssdk.services.ssm.model.SsmException;
 
 public class ParameterStoreService {
+
+  public String getParaValue(String paraName) {
+    SsmClient ssmClient = SsmClient.builder()
+      .build();
+
+
+    try {
+        GetParameterRequest parameterRequest = GetParameterRequest.builder()
+            .name(paraName)
+            .withDecryption(true)
+            .build();
+
+        GetParameterResponse parameterResponse = ssmClient.getParameter(parameterRequest);
+        ssmClient.close();
+        return parameterResponse.parameter().value();
+
+    } catch (SsmException e) {
+      return e.getMessage();
+    }
+  }
   
 }
