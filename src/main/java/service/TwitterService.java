@@ -56,12 +56,12 @@ public class TwitterService {
         .setCookieSpec(CookieSpecs.STANDARD).build())
       .build();
 
-    URIBuilder uriBuilder = new URIBuilder("https://api.twitter.com/labs/2/tweets/search");
+    URIBuilder uriBuilder = new URIBuilder("https://api.twitter.com/2/tweets/search/recent");
     ArrayList<NameValuePair> queryParameters;
     queryParameters = new ArrayList<>();
     queryParameters.add(new BasicNameValuePair("query", searchString));
     queryParameters.add(new BasicNameValuePair("start_time", startTime));
-    queryParameters.add(new BasicNameValuePair("expansions", "author_id"));
+    // queryParameters.add(new BasicNameValuePair("expansions", "author_id"));
     uriBuilder.addParameters(queryParameters);
 
     HttpGet httpGet = new HttpGet(uriBuilder.build());

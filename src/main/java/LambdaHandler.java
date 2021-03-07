@@ -13,7 +13,7 @@ import com.amazonaws.services.lambda.runtime.events.ScheduledEvent;
 import service.ParameterStoreService;
 import service.SlackService;
 import service.TwitterService;
-public class LambdaHandler implements RequestHandler<ScheduledEvent, Void> {
+public class LambdaHandler/* implements RequestHandler<ScheduledEvent, Void>*/ {
     private TwitterService twitterService;
     private SlackService slackService;
     // private DynamoService dynamoService;
@@ -26,8 +26,13 @@ public class LambdaHandler implements RequestHandler<ScheduledEvent, Void> {
     // private static final String SEARCH_STRING = System.getenv("SEARCH_STRING");
     private static final String SEARCH_STRING = System.getenv("aws");
 
-    public Void handleRequest(ScheduledEvent event, Context context) {
-        ParameterStoreService parameterStoreService = new ParameterStoreService();
+    public Void handleRequest(/*ScheduledEvent event, Context context*/) {
+        try {
+            parameterStoreService = new ParameterStoreService();
+        } catch(Exception e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+
         if (parameterStoreService != null) {
             setupSecrets();
             
@@ -66,6 +71,6 @@ public class LambdaHandler implements RequestHandler<ScheduledEvent, Void> {
     private String getTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return sdf.format(new Date(System.currentTimeMillis() - 3600 * 1000));
+        return sdf.format(new Date(System.currentTimeMillis() - 540 * 1000));
     }
 }
